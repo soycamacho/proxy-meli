@@ -7,5 +7,7 @@ spring:
       routes:
         - id: mercado-libre
           uri: https://api.mercadolibre.com
+          filters:
+            - name: GatewayCustomFilter
           predicates:
             - Path=/**
