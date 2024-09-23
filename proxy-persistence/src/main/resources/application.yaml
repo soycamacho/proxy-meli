@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: proxy-persistence
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/proxy_persistence
+      database: proxy-persistence
+
+server:
+  port: 8081
