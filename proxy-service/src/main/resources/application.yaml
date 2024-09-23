@@ -2,12 +2,19 @@ server:
   port: 8080
 
 spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/proxy_service
   cloud:
     gateway:
       routes:
         - id: mercado-libre
           uri: https://api.mercadolibre.com
+          predicates:
+            - Path=/proxy/**
           filters:
             - name: GatewayCustomFilter
-          predicates:
-            - Path=/**
+            - RewritePath=/proxy/(?<segment>.*), /$\{segment}
+feign:
+  proxy-persistence:
+    url: https://api.mercadolibre.com
