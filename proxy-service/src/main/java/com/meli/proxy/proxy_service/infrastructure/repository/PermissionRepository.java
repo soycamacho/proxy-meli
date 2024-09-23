@@ -12,4 +12,14 @@ import java.util.List;
 public interface PermissionRepository extends MongoRepository<Permission, String> {
 
     List<Permission> findByIp(String ip);
+
+    @Query("{ '$and': [ " +
+            " { '$or': [ { 'ip': ?0 }, { 'ip': null } ] }, " +
+            " { '$or': [ { 'path': ?1 }, { 'path': null } ] }, " +
+            " { '$or': [ { 'method': ?2 }, { 'method': null }, { 'method': { $size: 0 } } ] }, " +
+            " { '$or': [ { 'after': { $lte: ?3 } }, { 'after': null } ] }, " +
+            " { '$or': [ { 'before': { $gte: ?3 } }, { 'before': null } ] }, " +
+            " { '$or': [ { 'limit': { $gt: 0 } }, { 'limit': null } ] } " +
+            "] }")
+    List<Permission> findByIpAndPath(String ip, String path, String method, Date date);
 }

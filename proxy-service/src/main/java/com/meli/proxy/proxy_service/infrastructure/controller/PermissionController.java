@@ -3,6 +3,7 @@ package com.meli.proxy.proxy_service.infrastructure.controller;
 import com.meli.proxy.proxy_service.application.dto.PermissionDto;
 import com.meli.proxy.proxy_service.application.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,6 +67,17 @@ public class PermissionController {
     @GetMapping("/ip/{ip}")
     public ResponseEntity<List<PermissionDto>> getPermissionsByIp(@PathVariable String ip) {
         List<PermissionDto> permissions = service.getPermissionsByIp(ip);
+        return new ResponseEntity<>(permissions, HttpStatus.OK);
+    }
+
+    @GetMapping("/validations")
+    public ResponseEntity<List<PermissionDto>> getValidation(
+         @RequestParam(required = false) String ip,
+         @RequestParam(required = false) String path,
+         @RequestParam(required = false) String method,
+         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date date
+    ) {
+        List<PermissionDto> permissions = service.validation(ip, path, method, date != null ? date : new Date());
         return new ResponseEntity<>(permissions, HttpStatus.OK);
     }
 

@@ -6,6 +6,7 @@ import com.meli.proxy.proxy_service.infrastructure.repository.PermissionReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,6 +88,13 @@ public class PermissionService {
 
     public List<PermissionDto> getPermissionsByIp(String ip) {
         return repository.findByIp(ip).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<PermissionDto> validation(String ip, String path, String method, Date date) {
+        System.out.println(date);
+        return repository.findByIpAndPath(ip, path, method, date).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }

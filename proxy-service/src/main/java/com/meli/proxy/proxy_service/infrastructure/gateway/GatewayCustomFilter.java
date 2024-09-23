@@ -48,7 +48,7 @@ public class GatewayCustomFilter extends AbstractGatewayFilterFactory<Object> {
             statusCode = exchange.getResponse().getStatusCode().value();
         }
         PostRequestDto postRequestDto = new PostRequestDto(requestDto, duration, statusCode);
-        logger.info("Execution " + postRequestDto.getPath() + " ["+ postRequestDto.getStatus() +"] time: " + postRequestDto.getDuration() + " ms");
+        logger.info("[" + postRequestDto.getIp() + "] Execution " + postRequestDto.getPath() + " ["+ postRequestDto.getStatus() +"] time: " + postRequestDto.getDuration() + " ms");
     }
 
     private RequestDto getRequestDto(ServerHttpRequest request) {
