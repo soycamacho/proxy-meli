@@ -3,6 +3,7 @@ server:
 application:
   proxy:
     base-path: /proxy
+    rejection-status: 423
 spring:
   data:
     mongodb:

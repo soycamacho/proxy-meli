@@ -11,58 +11,61 @@ import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class GatewayCustomFilter extends AbstractGatewayFilterFactory<Object> {
     private static final Logger logger = LoggerFactory.getLogger(GatewayCustomFilter.class);
 
     @Value("${application.proxy.base-path}")
-    private String basePathProxy;
+    private String proxyBasePath;
+
+    @Value("${application.proxy.rejection-status}")
+    private int proxyRejectionStatus;
 
     private final ProxyProcessorService proxyProcessor;
 
     @Autowired
-    public GatewayCustomFilter(
-            ProxyProcessorService proxyProcessor
-    ) {
-        this.proxyProcessor = proxyProcessor;
-    }
+    public GatewayCustomFilter(ProxyProcessorService proxyProcessor) { this.proxyProcessor = proxyProcessor; }
 
     @Override
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
             RequestDto requestDto = getRequestDto(exchange.getRequest());
             if (!proxyProcessor.validateRequest(requestDto)) {
-                exchange.getResponse().setStatusCode(HttpStatus.valueOf(423));
+                exchange.getResponse().setStatusCode(HttpStatus.valueOf(proxyRejectionStatus));
                 return exchange.getResponse().setComplete();
             }
 
             long startTime = System.currentTimeMillis();
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-                long duration = System.currentTimeMillis() - startTime;
-                postRequest(requestDto, exchange, duration);
+                postRequest(requestDto, exchange, startTime);
             }));
         };
     }
 
-    @Async
-    protected void postRequest(RequestDto requestDto, ServerWebExchange exchange, long duration) {
-        int statusCode = -1;
-        if (exchange.getResponse().getStatusCode() != null) {
-            statusCode = exchange.getResponse().getStatusCode().value();
-        }
-        PostRequestDto postRequestDto = new PostRequestDto(requestDto, duration, statusCode);
-        logger.info("[" + postRequestDto.getIp() + "] Execution " + postRequestDto.getPath() + " ["+ postRequestDto.getStatus() +"] time: " + postRequestDto.getDuration() + " ms");
+    protected void postRequest(RequestDto requestDto, ServerWebExchange exchange, long startTime) {
+        long duration = System.currentTimeMillis() - startTime;
+        CompletableFuture.supplyAsync(() -> {
+            int statusCode = -1;
+            if (exchange.getResponse().getStatusCode() != null) {
+                statusCode = exchange.getResponse().getStatusCode().value();
+            }
+            PostRequestDto postRequestDto = new PostRequestDto(requestDto, duration, statusCode);
+            return postRequestDto;
+        }).thenAccept(postRequestDto -> {
+            logger.info("[" + postRequestDto.getIp() + "] Execution " + postRequestDto.getPath() + " ["+ postRequestDto.getStatus() +"] time: " + postRequestDto.getDuration() + " ms");
+        });
     }
 
     private RequestDto getRequestDto(ServerHttpRequest request) {
         return new RequestDto(
             request.getRemoteAddress().getAddress().getHostAddress(),
-            request.getURI().getPath().toString().replaceFirst(basePathProxy, ""),
+            request.getURI().getPath().toString().replaceFirst(proxyBasePath, ""),
             request.getMethod().name()
         );
     }

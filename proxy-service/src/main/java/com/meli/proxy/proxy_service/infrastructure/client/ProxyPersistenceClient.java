@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "proxy-persistence", url = "${feign.proxy-persistence.url}")
-public interface ProxyPersistence {
+public interface ProxyPersistenceClient {
     @PostMapping("/requests")
     void saveRequest(@RequestBody PostRequestDto postRequestDto);
 }
