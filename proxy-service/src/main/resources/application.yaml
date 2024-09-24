@@ -6,7 +6,7 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/proxy_service
   cloud:
-    gateway:
+    gateway: # https://cloud.spring.io/spring-cloud-gateway/reference/html/#gateway-starter
       routes:
         - id: mercado-libre
           uri: https://api.mercadolibre.com

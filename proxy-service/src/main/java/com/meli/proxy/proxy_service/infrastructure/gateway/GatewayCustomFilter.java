@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.scheduling.annotation.Async;
@@ -21,15 +20,19 @@ import reactor.core.publisher.Mono;
 public class GatewayCustomFilter extends AbstractGatewayFilterFactory<Object> {
     private static final Logger logger = LoggerFactory.getLogger(GatewayCustomFilter.class);
 
+    private final ProxyProcessorService proxyProcessor;
+
     @Autowired
-    private ProxyProcessorService proxyProcessor;
+    public GatewayCustomFilter(ProxyProcessorService proxyProcessor) {
+        this.proxyProcessor = proxyProcessor;
+    }
 
     @Override
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
             RequestDto requestDto = getRequestDto(exchange.getRequest());
             if (!proxyProcessor.validateRequest(requestDto)) {
-                exchange.getResponse().setStatusCode(HttpStatus.LOCKED);
+                exchange.getResponse().setStatusCode(HttpStatus.valueOf(423));
                 return exchange.getResponse().setComplete();
             }
 

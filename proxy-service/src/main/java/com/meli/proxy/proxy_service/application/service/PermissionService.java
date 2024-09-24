@@ -94,7 +94,7 @@ public class PermissionService {
 
     public List<PermissionDto> validation(String ip, String path, String method, Date date) {
         System.out.println(date);
-        return repository.findByIpAndPath(ip, path, method, date).stream()
+        return repository.findByIpAndPathAndMethodAndDateWithLimit(ip, path, method, date).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
