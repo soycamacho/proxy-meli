@@ -3,7 +3,7 @@ spring:
     name: proxy-persistence
   data:
     mongodb:
-      uri: mongodb://localhost:27017/proxy_persistence
+      uri: ${MONGODB_URI:mongodb://localhost:27017/proxy_service}
       database: proxy-persistence
 
 server:

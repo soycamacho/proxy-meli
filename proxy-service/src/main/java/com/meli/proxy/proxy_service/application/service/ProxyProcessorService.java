@@ -19,12 +19,11 @@ public class ProxyProcessorService {
     }
 
     public Boolean validateRequest(RequestDto requestDto) {
-        Date now = new Date();
         Long updated = repository.updateDecrementCounterByIpAndPathAndMethodAndDateWithLimit(
                 requestDto.getIp(),
                 requestDto.getPath(),
                 requestDto.getMethod(),
-                now
+                requestDto.getDate()
         );
 
         return updated > 0;

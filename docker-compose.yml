@@ -1,0 +1,45 @@
+services:  
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - proxy-network
+    volumes:
+      - mongo-data:/data/db
+
+  proxy-persistence:
+    build:
+      context: ./proxy-persistence
+    container_name: proxy-persistence
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+    networks:
+      - proxy-network
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/proxy_persistence
+
+  proxy-service:
+    build:
+      context: ./proxy-service
+    container_name: proxy-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+      - proxy-persistence
+    networks:
+      - proxy-network
+    environment:
+      - PERSISTENCE_API_URL=http://proxy-persistence:8081/api/proxy-requests
+      - MONGODB_URI=mongodb://mongo:27017/proxy_service
+
+networks:
+  proxy-network:
+    driver: bridge
+
+volumes:
+  mongo-data:

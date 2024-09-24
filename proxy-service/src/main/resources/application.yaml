@@ -3,16 +3,16 @@ server:
 application:
   proxy:
     base-path: /proxy
-    rejection-status: 423
+    rejection-status: ${PROXY_REJECTED_STATUS:423}
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/proxy_service
+      uri: ${MONGODB_URI:mongodb://localhost:27017/proxy_service}
   cloud:
     gateway: # https://cloud.spring.io/spring-cloud-gateway/reference/html/#gateway-starter
       routes:
         - id: mercado-libre
-          uri: https://api.mercadolibre.com
+          uri: ${API_URL:https://api.mercadolibre.com}
           predicates:
             - Path=${application.proxy.base-path}/**
           filters: # https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway/gatewayfilter-factories.html
@@ -20,4 +20,4 @@ spring:
             - StripPrefix=1
 feign:
   proxy-persistence:
-    url: https://api.mercadolibre.com
+    url: ${PERSISTENCE_API_URL:https://api.mercadolibre.com}
