@@ -1,0 +1,387 @@
+{
+	"info": {
+		"_postman_id": "ce545d5a-e67f-49b8-8c39-2eec027de30c",
+		"name": "meli proxy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38514277"
+	},
+	"item": [
+		{
+			"name": "proxy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is not 423\", function () {\r",
+							"    pm.response.to.not.have.status(423);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/proxy/sites/MLA/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"proxy",
+						"sites",
+						"MLA",
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "persistence create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ip\": \"192.168.1.1\",\n    \"path\": \"/test\",\n    \"method\": \"GET\",\n    \"date\": \"2024-09-22T12:00:00Z\",\n    \"duration\": 150,\n    \"status\": 200\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/proxy-requests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"proxy-requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "persistence all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/proxy-requests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"proxy-requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "persistence by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/proxy-requests/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"proxy-requests",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "66f06d5d45b112778c941ac2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "persistence delete id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/proxy-requests/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"proxy-requests",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "66f06d5d45b112778c941ac2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "persistence count",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/api/proxy-requests/counts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"proxy-requests",
+						"counts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "permission create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ip\": \"0:0:0:0:0:0:0:1\",\r\n    \"path\": \"/sites/MLA/categories\",\r\n    \"after\": \"2023-09-21T10:00:00Z\",\r\n    \"before\": \"2023-09-30T11:00:00Z\",\r\n    \"limit\": 100,\r\n    \"method\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/permissions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"permissions"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8080/api/proxy-requests \\\r\n-H \"Content-Type: application/json\" \\\r\n-d '{\r\n    \"ip\": \"192.168.1.1\",\r\n    \"path\": \"/api/test\",\r\n    \"method\": [\"GET\", \"POST\"],\r\n    \"date\": \"2023-09-21T10:00:00Z\",\r\n    \"duration\": 100,\r\n    \"status\": 200\r\n}'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "permission update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"66f1f74893614b5bf1bbf40d\",\r\n    \"ip\": \"0:0:0:0:0:0:0:2\",\r\n    \"path\": \"/sites/MLA/categories\",\r\n    \"method\": [],\r\n    \"after\": \"2024-09-21T10:00:00.000+00:00\",\r\n    \"before\": \"2024-09-30T11:00:00.000+00:00\",\r\n    \"limit\": 100,\r\n    \"count\": 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/permissions/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"permissions",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "66f1f74893614b5bf1bbf40d"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8080/api/proxy-requests \\\r\n-H \"Content-Type: application/json\" \\\r\n-d '{\r\n    \"ip\": \"192.168.1.1\",\r\n    \"path\": \"/api/test\",\r\n    \"method\": [\"GET\", \"POST\"],\r\n    \"date\": \"2023-09-21T10:00:00Z\",\r\n    \"duration\": 100,\r\n    \"status\": 200\r\n}'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "permission list",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/permissions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"permissions"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8080/api/proxy-requests \\\r\n-H \"Content-Type: application/json\" \\\r\n-d '{\r\n    \"ip\": \"192.168.1.1\",\r\n    \"path\": \"/api/test\",\r\n    \"method\": [\"GET\", \"POST\"],\r\n    \"date\": \"2023-09-21T10:00:00Z\",\r\n    \"duration\": 100,\r\n    \"status\": 200\r\n}'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "permission get",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/permissions/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"permissions",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "66f11af191946c1f7102495e"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8080/api/proxy-requests \\\r\n-H \"Content-Type: application/json\" \\\r\n-d '{\r\n    \"ip\": \"192.168.1.1\",\r\n    \"path\": \"/api/test\",\r\n    \"method\": [\"GET\", \"POST\"],\r\n    \"date\": \"2023-09-21T10:00:00Z\",\r\n    \"duration\": 100,\r\n    \"status\": 200\r\n}'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "permission validation",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/permissions/validations?ip=0:0:0:0:0:0:0:1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"permissions",
+						"validations"
+					],
+					"query": [
+						{
+							"key": "path",
+							"value": "/api/test1",
+							"disabled": true
+						},
+						{
+							"key": "ip",
+							"value": "0:0:0:0:0:0:0:1"
+						},
+						{
+							"key": "method",
+							"value": "GET",
+							"disabled": true
+						},
+						{
+							"key": "date",
+							"value": "2024-09-23T00:00:00-05:00",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:8080/api/proxy-requests \\\r\n-H \"Content-Type: application/json\" \\\r\n-d '{\r\n    \"ip\": \"192.168.1.1\",\r\n    \"path\": \"/api/test\",\r\n    \"method\": [\"GET\", \"POST\"],\r\n    \"date\": \"2023-09-21T10:00:00Z\",\r\n    \"duration\": 100,\r\n    \"status\": 200\r\n}'\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "original",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.mercadolibre.com/categories/MLA3530",
+					"protocol": "https",
+					"host": [
+						"api",
+						"mercadolibre",
+						"com"
+					],
+					"path": [
+						"categories",
+						"MLA3530"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

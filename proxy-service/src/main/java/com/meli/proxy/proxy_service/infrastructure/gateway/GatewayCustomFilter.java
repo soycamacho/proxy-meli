@@ -3,10 +3,10 @@ package com.meli.proxy.proxy_service.infrastructure.gateway;
 import com.meli.proxy.proxy_service.application.dto.PostRequestDto;
 import com.meli.proxy.proxy_service.application.dto.RequestDto;
 import com.meli.proxy.proxy_service.application.service.ProxyProcessorService;
-import com.meli.proxy.proxy_service.infrastructure.client.ProxyPersistenceFeign;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpStatus;
@@ -20,10 +20,15 @@ import reactor.core.publisher.Mono;
 public class GatewayCustomFilter extends AbstractGatewayFilterFactory<Object> {
     private static final Logger logger = LoggerFactory.getLogger(GatewayCustomFilter.class);
 
+    @Value("${application.proxy.base-path}")
+    private String basePathProxy;
+
     private final ProxyProcessorService proxyProcessor;
 
     @Autowired
-    public GatewayCustomFilter(ProxyProcessorService proxyProcessor) {
+    public GatewayCustomFilter(
+            ProxyProcessorService proxyProcessor
+    ) {
         this.proxyProcessor = proxyProcessor;
     }
 
@@ -57,7 +62,7 @@ public class GatewayCustomFilter extends AbstractGatewayFilterFactory<Object> {
     private RequestDto getRequestDto(ServerHttpRequest request) {
         return new RequestDto(
             request.getRemoteAddress().getAddress().getHostAddress(),
-            request.getURI().getPath(),
+            request.getURI().getPath().toString().replaceFirst(basePathProxy, ""),
             request.getMethod().name()
         );
     }

@@ -2,6 +2,7 @@ package com.meli.proxy.proxy_service.application.service;
 
 import com.meli.proxy.proxy_service.application.dto.PermissionDto;
 import com.meli.proxy.proxy_service.domain.Permission;
+import com.meli.proxy.proxy_service.infrastructure.mapper.ProxyRequestMapper;
 import com.meli.proxy.proxy_service.infrastructure.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,51 +15,30 @@ import java.util.stream.Collectors;
 public class PermissionService {
 
     private final PermissionRepository repository;
+    private final ProxyRequestMapper mapper;
 
     @Autowired
-    public PermissionService(PermissionRepository repository) {
+    public PermissionService(PermissionRepository repository, ProxyRequestMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
-    private Permission convertToEntity(PermissionDto dto) {
-        return new Permission(
-            dto.getIp(),
-            dto.getPath(),
-            dto.getMethod(),
-            dto.getAfter(),
-            dto.getBefore(),
-            dto.getLimit()
-        );
-    }
-
-    private PermissionDto convertToDto(Permission permission) {
-        return new PermissionDto(
-            permission.getId(),
-            permission.getIp(),
-            permission.getPath(),
-            permission.getMethod(),
-            permission.getAfter(),
-            permission.getBefore(),
-            permission.getLimit(),
-            permission.getCount()
-        );
-    }
 
     public PermissionDto createPermission(PermissionDto dto) {
-        Permission permission = convertToEntity(dto);
+        Permission permission = mapper.toEntity(dto);
         Permission savedPermission = repository.save(permission);
-        return convertToDto(savedPermission);
+        return mapper.toDto(savedPermission);
     }
 
     public List<PermissionDto> getAllPermissions() {
         return repository.findAll().stream()
-                .map(this::convertToDto)
+                .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public PermissionDto getPermissionById(String id) {
         return repository.findById(id)
-                .map(this::convertToDto)
+                .map(mapper::toDto)
                 .orElse(null);
     }
 
@@ -72,7 +52,7 @@ public class PermissionService {
                     existingPermission.setBefore(dto.getBefore());
                     existingPermission.setLimit(dto.getLimit());
                     Permission updatedPermission = repository.save(existingPermission);
-                    return convertToDto(updatedPermission);
+                    return mapper.toDto(updatedPermission);
                 })
                 .orElse(null);
     }
@@ -88,14 +68,13 @@ public class PermissionService {
 
     public List<PermissionDto> getPermissionsByIp(String ip) {
         return repository.findByIp(ip).stream()
-                .map(this::convertToDto)
+                .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public List<PermissionDto> validation(String ip, String path, String method, Date date) {
-        System.out.println(date);
         return repository.findByIpAndPathAndMethodAndDateWithLimit(ip, path, method, date).stream()
-                .map(this::convertToDto)
+                .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 

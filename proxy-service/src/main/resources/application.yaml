@@ -1,6 +1,8 @@
 server:
   port: 8080
-
+application:
+  proxy:
+    base-path: /proxy
 spring:
   data:
     mongodb:
@@ -11,10 +13,10 @@ spring:
         - id: mercado-libre
           uri: https://api.mercadolibre.com
           predicates:
-            - Path=/proxy/**
-          filters:
+            - Path=${application.proxy.base-path}/**
+          filters: # https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway/gatewayfilter-factories.html
             - name: GatewayCustomFilter
-            - RewritePath=/proxy/(?<segment>.*), /$\{segment}
+            - StripPrefix=1
 feign:
   proxy-persistence:
     url: https://api.mercadolibre.com
