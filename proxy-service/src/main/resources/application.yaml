@@ -20,4 +20,4 @@ spring:
             - StripPrefix=1
 feign:
   proxy-persistence:
-    url: ${PERSISTENCE_API_URL:localhost:8081}
+    url: ${PERSISTENCE_API_URL:http://localhost:8081}
