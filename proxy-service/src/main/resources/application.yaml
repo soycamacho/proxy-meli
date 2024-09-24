@@ -20,4 +20,4 @@ spring:
             - StripPrefix=1
 feign:
   proxy-persistence:
-    url: ${PERSISTENCE_API_URL:https://api.mercadolibre.com}
+    url: ${PERSISTENCE_API_URL:localhost:8081}
